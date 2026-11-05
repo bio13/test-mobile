@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Editor de cenários — O Curioso Mundo de Sofia</title>
+<style>
+:root{color-scheme:dark;--bg:#171526;--panel:#24213a;--line:#494363;--text:#f7f2ff;--muted:#c0b8d7;--accent:#f3a8cb}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 system-ui,Segoe UI,sans-serif}header{padding:20px 24px;border-bottom:1px solid var(--line);background:#1e1b30}h1{font-size:22px;margin:0 0 4px}p{margin:0;color:var(--muted)}main{display:grid;grid-template-columns:270px minmax(0,1fr);gap:16px;padding:16px;max-width:1600px;margin:auto}.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;min-width:0}.panel h2{font-size:15px;margin:0 0 10px}.group{margin-bottom:18px}.tools{display:grid;grid-template-columns:1fr 1fr;gap:7px}.tool,button,select,input{font:inherit;color:var(--text);background:#302b49;border:1px solid #5b5279;border-radius:7px;padding:9px}.tool{display:flex;align-items:center;gap:8px;text-align:left;cursor:pointer}.tool.active{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent);background:#49344f}.swatch{width:18px;height:18px;display:inline-grid;place-items:center;border:1px solid #ffffff55;border-radius:3px;font-weight:bold}.wall{background:#9c655f}.floor{background:#c8b98e}.path{background:#999ba8}.door{background:#6d8eb8}.erase{background:#302b49}.controls{display:grid;grid-template-columns:1fr 1fr;gap:8px}.controls label{display:grid;gap:4px;color:var(--muted);font-size:12px}.controls input,.controls select{width:100%;min-width:0}.button-stack{display:grid;gap:7px}.primary{background:#9b4f83;border-color:#d98dbb;font-weight:700}.danger{background:#5c303e}.hint{font-size:12px;color:var(--muted);margin-top:8px}.editor-top{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px}.scroll{overflow:auto;max-height:calc(100vh - 240px);min-height:360px;border:1px solid var(--line);border-radius:8px;background:#13111e;padding:12px}.grid{display:grid;gap:1px;width:max-content;image-rendering:pixelated}.cell{width:24px;height:24px;border:0;padding:0;border-radius:0;cursor:crosshair;display:grid;place-items:center;font-size:10px;user-select:none}.cell.wall{background:#9c655f;box-shadow:inset 0 0 0 2px #704744}.cell.floor{background:#c8b98e;box-shadow:inset 0 0 0 1px #b4a47a}.cell.path{background:#999ba8;box-shadow:inset 0 0 0 1px #7b7d89}.cell.door{background:#6d8eb8;box-shadow:inset 0 0 0 2px #3e5c87;color:white}.cell.erase{background:#13111e}.cell:focus{outline:2px solid white;z-index:1}.output{width:100%;min-height:180px;resize:vertical;background:#141220;color:#d8f0d3;border:1px solid var(--line);border-radius:8px;padding:10px;font:12px/1.5 ui-monospace,monospace}.status{font-size:12px;color:var(--muted)}.full{grid-column:1/-1}@media(max-width:800px){main{grid-template-columns:1fr}.scroll{max-height:60vh}.cell{width:20px;height:20px}}
+</style></head>
+<body>
+<header><h1>Editor visual de cenários</h1><p>Desenhe o piso, as paredes e as passagens com o mouse. Depois exporte o layout para o script.js.</p></header>
+<main>
+<aside class="panel">
+ <div class="group"><h2>1. Escolha o pincel</h2><div class="tools" id="tools">
+  <button class="tool active" data-tool="#"><span class="swatch wall">#</span>Parede</button>
+  <button class="tool" data-tool="."><span class="swatch floor">.</span>Piso</button>
+  <button class="tool" data-tool="p"><span class="swatch path">p</span>Caminho</button>
+  <button class="tool" data-tool="D"><span class="swatch door">D</span>Porta/passagem</button>
+  <button class="tool" data-tool=" "><span class="swatch erase">×</span>Apagar</button>
+ </div><p class="hint">Clique ou arraste sobre a grade para pintar. As portas devem coincidir com as posições configuradas em <code>portals</code> no código.</p></div>
+ <div class="group"><h2>2. Tamanho do mapa</h2><div class="controls">
+  <label>Largura (tiles)<input id="width" type="number" min="3" max="60" value="17"></label>
+  <label>Altura (tiles)<input id="height" type="number" min="3" max="40" value="12"></label>
+ </div><div class="button-stack" style="margin-top:8px"><button id="resize">Aplicar tamanho</button><label>Modelo inicial<select id="preset"><option value="room">Cômodo retangular</option><option value="hall">Corredor baixo (17×8)</option><option value="l">Formato em L</option><option value="zoo">Área de zoológico (36×24)</option></select></label><button id="loadPreset">Carregar modelo (apaga desenho atual)</button><button id="border">Criar paredes nas bordas</button><button id="clear" class="danger">Limpar mapa</button></div></div>
+ <div class="group"><h2>3. Arquivos</h2><div class="button-stack"><button id="exportJson" class="primary">Baixar mapa (.json)</button><button id="exportJs">Gerar código JavaScript</button><label>Importar mapa JSON<input id="importFile" type="file" accept=".json,application/json"></label></div><p class="hint">O editor exporta o desenho do piso/parede. A posição dos móveis, colisões, pontos de entrada e interações continua sendo definida no <code>script.js</code>.</p></div>
+</aside>
+<section class="panel">
+ <div class="editor-top"><div><h2 style="margin-bottom:3px">Área de desenho</h2><span id="dimensions" class="status">17 colunas × 12 linhas</span></div><span id="activeTool" class="status">Pincel: Parede (#)</span></div>
+ <div class="scroll"><div id="grid" class="grid" role="grid" aria-label="Grade do mapa"></div></div>
+ <div style="margin-top:14px"><div class="editor-top"><h2 style="margin:0">Código exportado</h2><button id="copy">Copiar código</button></div><textarea id="output" class="output" spellcheck="false" placeholder="Clique em ‘Gerar código JavaScript’ para visualizar o layout."></textarea><p id="message" class="status" aria-live="polite" style="margin-top:7px">Pronto para desenhar.</p></div>
+</section>
+</main>
+<script src="map-editor.js"></script>
+</body></html>

@@ -1,59 +1,75 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="screen-orientation" content="landscape">
-    <meta name="x5-orientation" content="landscape">
-    <title>Zoo Day</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#2D3A9F" />
+  <title>O Curioso Mundo de Sofia</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
-    <!-- AVISO DE ORIENTAÇÃO -->
-    <div id="aviso-orientacao" role="status" aria-live="polite">
-        <div class="aviso-orientacao-conteudo">
-            <div class="icone-rotacao" aria-hidden="true">↻</div>
-            <h2>Gire seu dispositivo</h2>
-            <p>Este jogo deve ser jogado na horizontal.</p>
+  <div id="aviso-orientacao" role="status" aria-live="polite">
+    <div class="aviso-orientacao-conteudo">
+      <div class="icone-rotacao" aria-hidden="true">↻</div>
+      <h2>Gire seu dispositivo</h2>
+      <p>Este jogo foi pensado para ser jogado na horizontal.</p>
+    </div>
+  </div>
+
+  <section id="telaInicial" aria-label="Tela inicial do jogo">
+    <div class="painel-inicial">
+      <p class="sobretitulo">UMA AVENTURA NO ZOOLÓGICO</p>
+      <h1>O Curioso Mundo de Sofia</h1>
+      <button id="botaoIniciar" type="button">JOGAR <span aria-hidden="true">▶</span></button>
+      <p class="instrucoes-iniciais">Use <strong>W A S D</strong> ou as <strong>setas</strong> para andar e
+        <strong>E</strong> para interagir.
+      </p>
+      <p class="instrucoes-mobile">No celular, use os controles na tela.</p>
+    </div>
+  </section>
+
+  <main id="container-jogo" class="aguardando-inicio">
+    <button id="trocarModo" type="button">Modo: PC</button>
+    <div id="interface-jogo" aria-label="Informações do jogo">
+      <div id="label-cenario" aria-live="polite">O Curioso Mundo de Sofia</div>
+      <div id="game-host" aria-label="Área de jogo do Curioso Mundo de Sofia">
+        <div id="loadingOverlay" hidden role="status" aria-live="polite">
+          <div class="loading-card">
+            <div class="loading-spinner" aria-hidden="true">✦</div><strong>Carregando o mundo de Sofia...</strong>
+            <p>Aguarde enquanto os cenários e personagens são preparados.</p>
+          </div>
         </div>
+      </div>
+      <div id="label-instrucoes" aria-live="polite">WASD / SETAS: mover · E: interagir</div>
+      <div id="label-aviso" role="status" aria-live="polite" hidden></div>
     </div>
 
-    <!-- TELA INICIAL -->
-    <section id="telaInicial" aria-label="Tela inicial do Zoo Day">
-        <div class="painel-inicial">
-            <h1>O Curioso Mundo de Sofia</h1>
-            <button id="botaoIniciar" type="button">JOGAR <span aria-hidden="true">▶</span></button>
-            <p class="instrucoes-iniciais">Use <strong>W A S D</strong> para andar e <strong>E</strong> para interagir.</p>
-            <p class="instrucoes-mobile">No celular, use os controles na tela.</p>
+    <div id="painel-missoes">
+        <h3>Missões</h3>
+        <ul></ul>
+      </div>
+
+    <div id="controlesMobile" aria-label="Controles do jogo">
+      <div class="direcional" aria-label="Movimentação">
+        <button type="button" data-direcao="w" class="upButton" aria-label="Mover para cima">▲</button>
+        <div class="linha-direcional">
+          <button type="button" data-direcao="a" class="leftButton" aria-label="Mover para esquerda">◀</button>
+          <span id="botaoCentral" aria-hidden="true">◉</span>
+          <button type="button" data-direcao="d" class="rightButton" aria-label="Mover para direita">▶</button>
         </div>
-    </section>
+        <button type="button" data-direcao="s" class="downButton" aria-label="Mover para baixo">▼</button>
+      </div>
+      <div class="area-interacao">
+        <button type="button" id="botaoInteragir" aria-label="Interagir">E</button>
+      </div>
+    </div>
+  </main>
 
-    <!-- ÁREA DO JOGO -->
-    <main id="container-jogo" class="aguardando-inicio">
-        <button id="trocarModo">Modo: PC</button>
-        <div id="controlesMobile" aria-label="Controles do jogo">
-            <div class="direcional" aria-label="Movimentação">
-                <button type="button" data-direcao="w" class="upButton" aria-label="Mover para cima">▲</button>
-                <div>
-                    <button type="button" data-direcao="a" class="leftButton" aria-label="Mover para esquerda">◀</button>
-                    <button id="botaoCentral"><strong>◉</strong></button>
-                    <button type="button" data-direcao="d" class="rightButton" aria-label="Mover para direita">▶</button>
-                </div>
-                <button type="button" data-direcao="s" class="downButton" aria-label="Mover para baixo">▼</button>
-            </div>
-            <div class="area-interacao">
-                <button type="button" id="botaoInteragir" aria-label="Interagir">E</button>
-            </div>
-        </div>
-
-        <canvas id="jogo"></canvas>
-    </main>
-
-    <script src="minigame1.js"></script>
-    <script src="minigame2.js"></script>
-    <script src="script.js"></script>
+  <div id="endingOverlay" hidden role="dialog" aria-modal="true" aria-label="Animação final e créditos"></div>
+  <script src="https://cdn.jsdelivr.net/npm/phaser@4.2.1/dist/phaser.min.js"></script>
+  <script src="script.js"></script>
 </body>
 
 </html>
